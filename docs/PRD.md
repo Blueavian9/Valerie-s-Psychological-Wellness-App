@@ -1,5 +1,5 @@
-# PRD.md
-# Holistic Psychology Booking Platform
+
+# Holistic Psychology Booking Platform (PRD.md)
 
 1. Product Overview
 
@@ -317,4 +317,5 @@ Each EPIC can be completed independently, tested locally, and deployed increment
 Rule: Never jump to the final line.
 
 Always validate the state before and after each change.
+
 
