@@ -1,34 +1,39 @@
+<<<<<<< HEAD
 
 # Holistic Psychology Booking Platform (PRD.md)
+=======
+# PRD.md
+# Holistic Psychology Booking Platform
+>>>>>>> 5fff434 (created PRD.md file)
 
 1. Product Overview
 
-The Holistic Psychology Booking Platform is a privacy-first, SEO-optimized online booking system for holistic psychologists. It enables practitioners to manage availability and bookings securely, while allowing clients to book sessions without creating accounts.
+The Holistic Psychology Booking Platform is a privacy-first, SEO-optimized online booking system for holistic psychologists. It enables practitioners to manage availability and bookings securely while allowing clients to book sessions without creating accounts.
 
-The system is designed to be HIPAA-aware, self-hosted, and scalable, using Cloudflare’s edge stack for performance and future growth.
+The platform is built on a Cloudflare edge-native stack to ensure performance, scalability, and future extensibility.
 
-2. Problem Statement
+2. Core Principles
 
-Current booking tools for holistic psychology practices:
+HIPAA-aware by design (data minimization, auditability)
 
-Are difficult to use for vulnerable populations
+Practitioner-owned data
 
-Do not prioritize privacy or HIPAA considerations
+Account-free client booking
 
-Lack SEO optimization, reducing discoverability
+SEO-first public pages
 
-Require heavy SaaS lock-in with limited data ownership
+Incremental, testable development
 
-This platform solves those issues with a lightweight, transparent, and practitioner-owned solution.
+Junior-developer friendly execution
 
 3. Target Users
-Primary Users
+Practitioners
 
 Holistic psychologists
 
-Small psychology practices
+Small private practices
 
-Secondary Users
+Clients
 
 Families
 
@@ -38,92 +43,91 @@ Single mothers
 
 Low-income individuals seeking therapy
 
-4. Product Goals
+4. Out of Scope (MVP Guardrails)
 
-Enable account-free client bookings
+The MVP explicitly excludes:
 
-Ensure secure practitioner-only access
+Video therapy
 
-Maintain HIPAA-aware data handling
+Insurance billing
 
-Optimize for SEO and accessibility
+Mobile apps
 
-Deploy using edge-native infrastructure
+Client user accounts
 
-Be extensible for future features (payments, insurance, multi-practitioner)
+Payments
 
-5. Technical Stack
+These are planned future epics, not MVP blockers.
+
+5. Technical Stack (Locked)
 Layer	Technology
 Frontend	Vite + React 19 + TypeScript + shadcn/ui
 Backend	Hono on Cloudflare Workers
-Database	Cloudflare D1 (SQLite at edge)
-Auth	Magic Links / JWT (Resend)
+Database	Cloudflare D1
+Auth	Magic Links + JWT
 Email	Resend
 SEO	Hono SSR + React Helmet
 Hosting	Cloudflare Workers
-CI/CD	Wrangler
-6. Development Methodology (Chaining Prompt Rule)
+CLI	Wrangler
+6. Required Reading (Before Coding)
 
-Every task must follow this pattern:
+Before starting EPIC 0, the developer MUST complete:
 
-State Now – What exists currently?
+📄 Setup.md
+This document defines:
 
-Change State – What command or code changes it?
+Repository creation
+
+Cloudflare setup
+
+D1 database creation
+
+Wrangler configuration
+
+Local + production workflows
+
+👉 This PRD assumes Setup.md has been completed successfully.
+
+7. Development Rule: Chaining Prompt Standard
+
+Every task must follow this execution pattern:
+
+State Now – What exists?
+
+Change State – What code or command changes it?
 
 Verify State – How do we confirm success?
 
-This rule applies to:
+❌ Never jump directly to deployment
+✅ Always validate locally first
 
-Git
-
-Database migrations
-
-API routes
-
-UI components
-
-Deployments
-
-EPIC 0: Repository & Environment Setup
+EPIC 0: Project Initialization (Post-Setup)
 Goal
 
-Prepare a clean, reproducible development environment.
+Confirm baseline project health after Setup.md.
 
 Tasks
 
- Clone repository
+ Run npm install
 
- Install dependencies
+ Run npm run dev
 
- Verify local dev server runs
+ Verify local server loads
 
  Commit baseline state
 
-Acceptance Criteria
-
-npm run dev works
+Verify
 
 No TypeScript errors
 
-Repo builds without warnings
+App loads at localhost:5173
 
-EPIC 1: Database Foundation (Cloudflare D1)
+EPIC 1: Database Architecture (D1)
 Goal
 
-Create a secure, auditable database structure.
+Create secure, minimal, auditable persistence.
 
-Feature 1.1: Initialize D1 Database
-
- Create D1 database
-
- Bind database in wrangler.json
-
- Generate types
-
-Verify:
-npx wrangler d1 execute <db> --local --command "SELECT 1"
-
-Feature 1.2: Core Tables
+Feature 1.1: Core Tables
 Tables
 
 practitioners
@@ -138,31 +142,56 @@ Tasks
 
  Create 0001_initial.sql
 
- Apply locally
+ Apply locally (--local)
 
- Apply to production
+ Verify tables exist
 
-Verify:
-SELECT name FROM sqlite_master WHERE type='table'
+ Apply to production (--remote)
+
+Verify
+
+SELECT name FROM sqlite_master WHERE type='table';
+
+Feature 1.2: Data Rules
+
+No PHI in URLs
+
+No client passwords
+
+All writes logged in audit_logs
 
 EPIC 2: Backend API (Hono)
 Goal
 
-Expose secure, predictable APIs.
+Expose predictable, typed APIs.
 
 Feature 2.1: Health & Test Routes
+Routes
 
- /api/health
+GET /api/health
 
- /api/hello
+GET /api/hello
+
+Verify
+
+Returns JSON
+
+No database dependency
 
 Feature 2.2: Practitioner Authentication
+Tasks
 
- Magic link login
+ Magic link request endpoint
 
- JWT validation middleware
+ JWT verification middleware
 
  Protected routes
+
+Verify
+
+Unauthenticated access denied
+
+Token expires correctly
 
 Feature 2.3: Booking APIs
 Endpoints
@@ -173,123 +202,126 @@ POST /api/appointments
 
 GET /api/appointments/:id
 
-Each endpoint must:
+Requirements
 
-Validate input
+Input validation
 
-Log audit entry
+Audit logging
 
-Return typed responses
+Typed responses
 
-EPIC 3: Frontend UI (React)
+EPIC 3: Frontend (React)
 Goal
 
 Deliver a calm, accessible booking experience.
 
-Feature 3.1: Public Booking Pages
+Feature 3.1: Public Pages (SEO)
 
- Landing page (SEO-first)
+Landing page
 
- Practitioner profile page
+Practitioner profile
 
- Availability calendar
+Availability calendar
 
- Booking confirmation page
+Booking confirmation
+
+Verify
+
+Indexed metadata
+
+No auth required
+
+Mobile responsive
 
 Feature 3.2: Practitioner Dashboard
 
- Login screen
+Login screen
 
- Availability editor
+Availability editor
 
- Appointment list
+Booking list
 
- Logout flow
+Logout flow
+
+Verify
+
+Auth protected
+
+Data matches DB state
 
 EPIC 4: SEO & Accessibility
-Goal
-
-Maximize discoverability and trust.
-
 Tasks
 
- SSR with Hono
+ Hono SSR enabled
 
  React Helmet metadata
 
  Semantic HTML
 
- Accessibility checks
+ Accessible forms
 
 EPIC 5: Email Notifications
-Goal
-
-Confirm bookings securely.
-
 Tasks
-
- Integrate Resend
 
  Booking confirmation email
 
- Practitioner notification email
+ Practitioner notification
 
-EPIC 6: Security & Compliance (HIPAA-Aware)
-Goal
+ Resend integration
 
-Minimize risk and exposure.
+Verify
 
+Email sent on booking
+
+No sensitive data exposed
+
+EPIC 6: Security & Compliance
+Requirements
+
+HTTPS only
+
+No client accounts
+
+Audit logs for all writes
+
+Privacy notice page
+
+EPIC 7: Deployment
 Tasks
 
- No PHI in URLs
-
- No client accounts
-
- Encrypted transport (HTTPS)
-
- Audit logs for data access
-
- Privacy notice page
-
-EPIC 7: Deployment & Hosting
-Goal
-
-Ship to production.
-
-Tasks
-
- Apply migrations to production
+ Run production migrations
 
  Build frontend
 
  Deploy Worker
 
- Verify live endpoints
+ Verify endpoints
 
-Verify:
+Verify
 
-Booking flow works end-to-end
+Booking works end-to-end
 
-Emails are delivered
+Data persists
 
-Database records persist
+Emails deliver
 
-EPIC 8: Scalability & Future Enhancements
-Planned (Post-MVP)
+EPIC 8: Scalability (Post-MVP)
+
+Planned future enhancements:
 
 Payments (Stripe)
 
-Multi-practitioner support
+Multi-practitioner orgs
 
 Admin roles
 
+Calendar sync
+
+Analytics
+
 Insurance workflows
 
-Calendar sync (Google/Apple)
-
-Analytics dashboard
-
-7. Success Metrics
+8. Success Metrics
 
 100+ bookings in first month
 
@@ -297,25 +329,26 @@ Analytics dashboard
 
 Zero unauthorized data access
 
-Positive practitioner feedback
-
-8. Non-Goals (Explicitly Out of Scope for MVP)
-
-Video therapy
-
-Insurance billing
-
-Mobile apps
-
-Client user accounts
+Practitioner retention
 
 9. Final Notes
 
-This PRD is intentionally modular and junior-friendly.
-Each EPIC can be completed independently, tested locally, and deployed incrementally.
+Setup.md = HOW
 
+<<<<<<< HEAD
 Rule: Never jump to the final line.
 
 Always validate the state before and after each change.
 
 
+=======
+PRD.md = WHAT & WHY
+
+Every EPIC is independently testable
+
+Junior developers should complete EPICS sequentially
+
+Rule:
+Never jump to the final line.
+Always confirm the state before and after.
+>>>>>>> 5fff434 (created PRD.md file)
