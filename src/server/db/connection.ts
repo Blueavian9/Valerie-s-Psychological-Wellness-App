@@ -1,15 +1,9 @@
-/**
- * Database connection module
- * Single Responsibility: Handle database connection and provide type-safe access
- */
 import type { Env } from "../types/env.js";
+import type { D1Database } from "@cloudflare/workers-types";
 
-/**
- * Get the D1 database instance from environment
- * @param env - Environment bindings
- * @returns D1Database instance
- */
 export function getDatabase(env: Env): D1Database {
-	return env.DB;
+  if (!env.DB) {
+    throw new Error("DB binding missing. Check wrangler.json d1_databases binding is 'DB'.");
+  }
+  return env.DB;
 }
-
